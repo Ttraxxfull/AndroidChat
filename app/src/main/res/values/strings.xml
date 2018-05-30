@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestChat-2</string>
+    <string name="app_name">Chat TF</string>
     <string name="login_title">Chat d\'aide</string>
     <string name="login_pseudo">Pseudo</string>
     <string name="login_connexion">Connexion</string>

@@ -1,14 +1,15 @@
 package com.example.ttraxxfull.testchat_2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.support.v7.widget.Toolbar;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -35,13 +35,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,14 +47,12 @@ public class ChatActivity extends AppCompatActivity {
     private static final String TAG = "CHAT";
     private static final int SELECT_PHOTO = 1;
     private EditText etMessage;
-    private ImageButton sendButton, imageButton;
+    private ImageButton imageButton;
     private RecyclerView recycler;
     private ProgressBar imageLoader;
 
     private FirebaseAuth mAuth;
-    private FirebaseDatabase mDatabase;
     private DatabaseReference mRef;
-    private FirebaseStorage mStorage;
     private StorageReference storageReference;
     private FirebaseAuth.AuthStateListener authStateListener;
     private ChildEventListener childEventListener;
@@ -81,7 +75,7 @@ public class ChatActivity extends AppCompatActivity {
 //Initialisation de la toolbar
 
         android.support.v7.widget.Toolbar toolbar;
-        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Time Flies");
         setSupportActionBar(toolbar);
 
@@ -89,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         initViews();
         initFirebase();
 
-        prefs = getSharedPreferences("caht", MODE_PRIVATE);
+        prefs = getSharedPreferences("chat", MODE_PRIVATE);
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -116,34 +110,36 @@ public class ChatActivity extends AppCompatActivity {
         if (childEventListener == null) {
             childEventListener = new ChildEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                     Log.w(TAG, "onChildAdded");
                     Message message = dataSnapshot.getValue(Message.class);
+                    assert message != null;
                     message.setUid(dataSnapshot.getKey());
                     adapter.addMessage(message);
                     recycler.scrollToPosition(adapter.getItemCount() - 1);
                 }
 
                 @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 
                 }
 
                 @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
                     Message message = dataSnapshot.getValue(Message.class);
+                    assert message != null;
                     message.setUid(dataSnapshot.getKey());
                     adapter.deleteMessage(message);
                 }
 
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             };
@@ -160,7 +156,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initViews() {
         etMessage = findViewById(R.id.etMessage);
-        sendButton = findViewById(R.id.sendButton);
+        ImageButton sendButton = findViewById(R.id.sendButton);
         imageButton = findViewById(R.id.imageButton);
         recycler = findViewById(R.id.recycler);
         imageLoader = findViewById(R.id.imageLoader);
@@ -199,6 +195,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_PHOTO && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
+            assert imageUri != null;
             Log.w(TAG, "onActivityResult: " + imageUri.toString());
             uploadImage(imageUri);
 
@@ -217,7 +214,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
-                    Uri imageUrl = task.getResult().getDownloadUrl();
+                    UploadTask.TaskSnapshot imageUrl = task.getResult();
                     if (imageUrl != null) {
                         sendMesssage(imageUrl.toString());
                     }
@@ -251,6 +248,7 @@ public class ChatActivity extends AppCompatActivity {
             message = new Message(username, userId, null, imageUrl);
         }
         mRef.child(Constants.MESSAGES_DB).push().setValue(message);
+
         etMessage.setText("");
 
     }
@@ -259,9 +257,9 @@ public class ChatActivity extends AppCompatActivity {
     private void initFirebase() {
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();
-        mStorage = FirebaseStorage.getInstance();
+        FirebaseStorage mStorage = FirebaseStorage.getInstance();
         storageReference = mStorage.getReferenceFromUrl(Constants.STORAGE_PATH).child(Constants.STORAGE_REF);
     }
 
@@ -282,11 +280,11 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(ref);
-        List tasks = storageReference.getActiveUploadTasks();
+        List<UploadTask> tasks = storageReference.getActiveUploadTasks();
         if (tasks.size() > 0) {
             imageButton.setEnabled(false);
             imageLoader.setVisibility(View.VISIBLE);
-            uploadTask = (UploadTask) tasks.get(0);
+            uploadTask = tasks.get(0);
             addUploadListener(uploadTask);
         }
     }
@@ -301,6 +299,7 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.logout) {
             clearOnLogout();
+            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -310,7 +309,7 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             mRef.child(Constants.USERS_DB).child(user.getUid()).removeValue();
-            mRef.child(Constants.USERS_DB).child(username).removeValue();
+            mRef.child(Constants.USERNAMES_DB).child(username).removeValue();
             prefs.edit().remove("PSEUDO").apply();
             adapter.clearMessage();
             detachChildListener();
@@ -338,4 +337,5 @@ public class ChatActivity extends AppCompatActivity {
         super.onPostResume();
         mAuth.addAuthStateListener(authStateListener);
     }
+
 }

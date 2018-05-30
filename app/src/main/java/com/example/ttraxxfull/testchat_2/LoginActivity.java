@@ -30,10 +30,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private EditText etPseudo;
     private ProgressBar loader;
-    private Button btnLogin;
 
     private FirebaseAuth mAuth;
-    private FirebaseDatabase mDatabase;
     private DatabaseReference mRef;
     private SharedPreferences prefs;
 
@@ -46,13 +44,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         etPseudo = (EditText) findViewById(R.id.etPseudo);
         loader = (ProgressBar) findViewById(R.id.loader);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
+        Button btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
 
         //Init de Firebase
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();
 
         prefs = getSharedPreferences("chat", MODE_PRIVATE);
@@ -89,21 +87,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this, "Connexion impossible, veuillez réessayer", Toast.LENGTH_SHORT).show();
-                }
 
-                final String userid = task.getResult().getUser().getUid();
+                final String userId = task.getResult().getUser().getUid();
 
                 checkUsername(username, new CheckUsernameCallback() {
                     @Override
                     public void isValid(final String username) {
-                        User newUser = new User(username, userid);
-                        mRef.child(Constants.USERS_DB).child(userid).setValue(newUser).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>() {
+                        User newUser = new User(username, userId);
+                        mRef.child(Constants.USERS_DB).child(userId).setValue(newUser).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    mRef.child(Constants.USERNAMES_DB).child(username).setValue(userid);
+                                    mRef.child(Constants.USERNAMES_DB).child(username).setValue(userId);
                                     prefs.edit().putString("PSEUDO", username).apply();
                                     startActivity(new Intent(getApplicationContext(), ChatActivity.class));
                                     finish();

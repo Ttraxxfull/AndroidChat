@@ -1,27 +1,31 @@
 {
   "project_info": {
-    "project_number": "945416575004",
-    "firebase_url": "https://testchat-2.firebaseio.com",
-    "project_id": "testchat-2",
-    "storage_bucket": "testchat-2.appspot.com"
+    "project_number": "162638018730",
+    "firebase_url": "https://appchate4.firebaseio.com",
+    "project_id": "appchate4",
+    "storage_bucket": "appchate4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:945416575004:android:cf29644d761e955e",
+        "mobilesdk_app_id": "1:162638018730:android:cf29644d761e955e",
         "android_client_info": {
           "package_name": "com.example.ttraxxfull.testchat_2"
         }
       },
       "oauth_client": [
         {
-          "client_id": "945416575004-67b1anf9h4vp8ikmpee7e90dgktaf2ii.apps.googleusercontent.com",
+          "client_id": "162638018730-5upd7qnpqj25p052hqspbrit8orp7ho8.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "162638018730-5upd7qnpqj25p052hqspbrit8orp7ho8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDFy7FQwuYn8mo38jpIBcoIMV6s1Y2b3i0"
+          "current_key": "AIzaSyC0IPNXZb2ZRcD2dCXmu_pb31eU-xhY6B4"
         }
       ],
       "services": {
