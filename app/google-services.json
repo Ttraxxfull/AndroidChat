@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "945416575004",
+    "firebase_url": "https://testchat-2.firebaseio.com",
+    "project_id": "testchat-2",
+    "storage_bucket": "testchat-2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945416575004:android:cf29644d761e955e",
+        "android_client_info": {
+          "package_name": "com.example.ttraxxfull.testchat_2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945416575004-67b1anf9h4vp8ikmpee7e90dgktaf2ii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFy7FQwuYn8mo38jpIBcoIMV6s1Y2b3i0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
